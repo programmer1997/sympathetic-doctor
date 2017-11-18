@@ -57,84 +57,48 @@ readBowel():-bowel_movements_library(X),readBowel(X).
 readMiscellaneous():-miscellaneous_library(X),readMiscellaneous(X).
 
 /*
-predicates to read pain, mood... levels recursively.
-It splits the parameter list into head and tail, thus checking for  the head and passing the tail if the user says no
+predicates to readPain/1, moodLevel/1... to read pain,mood  recursively.
+
 */
-readPain(List):-  nth0(0,List,Elem),
-                  [_|T]=List,
-                  format("Do you experience ~w pain",[Elem]),
+readPain(List):-
+                  [H|T]=List,
+                  format("Do you experience ~w pain",[H]),
                   read(X),
-                  (test(X)->assert(pain(Elem));
+                  (test(X)->assert(pain(H));
                   readPain(T)
                   ).
 
 
-readMood(List):-  nth0(0,List,Elem),
-                  [_|T]=List,
-                  format("Do you feel ~w",[Elem]),
+readMood(List):-
+                  [H|T]=List,
+                  format("Do you feel ~w",[H]),
                   read(X),
-                  (test(X)->assert(mood(Elem));
+                  (test(X)->assert(mood(H));
                   readMood(T)
                   ).
 
 
-readFever(List):-  nth0(0,List,Elem),
-                  [_|T]=List,
-                  format("Do you have ~w fever",[Elem]),
+readFever(List):-
+                  [H|T]=List,
+                  format("Do you have ~w fever",[H]),
                   read(X),
-                  (test(X)->assert(fever(Elem));
+                  (test(X)->assert(fever(H));
                   readFever(T)
                   ).
 
 
-readBowel(List):-  nth0(0,List,Elem),
-                  [_|T]=List,
-                  format("Do you experience ~w stools",[Elem]),
+readBowel(List):-
+                  [H|T]=List,
+                  format("Do you experience ~w stools",[H]),
                   read(X),
-                  (test(X)->assert(bowel(Elem));
+                  (test(X)->assert(bowel(H));
                   readBowel(T)
                   ).
 
-readMiscellaneous(List):-  nth0(0,List,Elem),
-                  [_|T]=List,
-                  format("Do you experience ~w ",[Elem]),
+readMiscellaneous(List):-
+                  [H|T]=List,
+                  format("Do you experience ~w ",[H]),
                   read(X),
-                  (test(X)->assert(miscellaneous(Elem));
+                  (test(X)->assert(miscellaneous(H));
                   readMiscellaneous(T)
                   ).
-
-/*
-
-
-readPain() :-
-
-    write('Do you experience pain?'),nl,read(X),
-    test(X)->(pain_library(Y),readPainLevel(Y));write("ok").
-
-
-
-
-readMood() :-
-    write('Do you experience mood swings?'),nl,read(Y),
-    test(Y)->readMoodLevel([angry,depressed,sad]);write("ok").
-
-
-
-readPainLevel(List):-nth0(0,List,Elem),
-                     [_|T]=List,
-                     format("Do you experience ~w pain",[Elem]),
-                     read(X),
-                     (test(X)->assert(pain(Elem));
-                     readPain(T)
-                     ).
-
-readMoodLevel(List):-nth0(0,List,Elem),
-                     [_|T]=List,
-                     write("Is mood type "),
-                     write(Elem),
-                     nl,
-                     read(X),
-                     (test(X)->assert(moodlevel(Elem));
-                     readMoodLevel(T)
-                     ).
-*/
