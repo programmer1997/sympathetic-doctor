@@ -1,16 +1,32 @@
+
+% SYMPATHETIC DOCTOR
 /*
 ----------main rule-----------------------------
-readPain() read the amount of pain,
-readMood() reads mood  etc.
-diagnose() diagnoses the disease based on the symptoms
-program ends
+start the program
 */
-main:-readPain(),readMood(),readFever(),readBowel(),readMiscellaneous(),diagnose().
+
+main:-initialize(),
+      readPain(),
+      readMood(),
+      readFever(),
+      readBowel(),
+      readMiscellaneous(),
+      diagnose().
 
 
 % function to test yes or no
 test(X):-
    X=='yes'.
+
+initialize():- retractall(pain(_)),
+               retractall(mood(_)),
+               retractall(fever(_)),
+               retractall(bowel(_)),
+               retractall(miscellaneous(_)).
+
+
+list_empty([]):-true().
+list_empty([_|_]):-false().
 
 
 % Symptom lists
@@ -30,11 +46,16 @@ miscellaneous().
 
 
 % Diseases rules
-cancer():-pain(strong),mood(depressed),fever(mild),bowel(bloody),miscellaneous(giddy).
-amoebiasis():-pain(unbearable),mood(weepy),fever(high),bowel(loose),miscellaneous(itchy).
-rabies():-pain(strong),mood(angry),fever(high),bowel(normal),miscellaneous(hallucinating).
-heart_trouble():-pain(unbearable),mood(stressed),fever(no),bowel(normal),miscellaneous(palpitations).
-dehydration():-pain(no),mood(calm),fever(no),bowel(hard),miscellaneous(giddy).
+cancer():-pain(strong),mood(depressed),fever(mild),bowel(bloody),
+          miscellaneous(giddy).
+amoebiasis():-pain(unbearable),mood(weepy),fever(high),bowel(loose),
+              miscellaneous(itchy).
+rabies():-pain(strong),mood(angry),fever(high),bowel(normal),
+          miscellaneous(hallucinating).
+heart_trouble():-pain(unbearable),mood(stressed),fever(no),bowel(normal),
+                 miscellaneous(palpitations).
+dehydration():-pain(no),mood(calm),fever(no),bowel(hard),
+               miscellaneous(giddy).
 
 
 % checks meets conditions for which disease and prints the disease
@@ -58,13 +79,16 @@ readMiscellaneous():-miscellaneous_library(X),readMiscellaneous(X).
 
 /*
 predicates to readPain/1, moodLevel/1... to read pain,mood  recursively.
+it splits the list into [H|L] i.e head and Tail
+if the user says yes to head symptom, then true,
+or else it calls the same predicate recursively passing the tail as parameter
 
 */
 readPain(List):-
                   [H|T]=List,
                   format("Do you experience ~w pain",[H]),
                   read(X),
-                  (test(X)->assert(pain(H));
+                  ((test(X);list_empty(T))->assert(pain(H));
                   readPain(T)
                   ).
 
@@ -73,7 +97,7 @@ readMood(List):-
                   [H|T]=List,
                   format("Do you feel ~w",[H]),
                   read(X),
-                  (test(X)->assert(mood(H));
+                  ((test(X);list_empty(T))->assert(mood(H));
                   readMood(T)
                   ).
 
@@ -82,7 +106,7 @@ readFever(List):-
                   [H|T]=List,
                   format("Do you have ~w fever",[H]),
                   read(X),
-                  (test(X)->assert(fever(H));
+                  ((test(X);list_empty(T))->assert(fever(H));
                   readFever(T)
                   ).
 
@@ -91,7 +115,7 @@ readBowel(List):-
                   [H|T]=List,
                   format("Do you experience ~w stools",[H]),
                   read(X),
-                  (test(X)->assert(bowel(H));
+                  ((test(X);list_empty(T))->assert(bowel(H));
                   readBowel(T)
                   ).
 
@@ -99,6 +123,6 @@ readMiscellaneous(List):-
                   [H|T]=List,
                   format("Do you experience ~w ",[H]),
                   read(X),
-                  (test(X)->assert(miscellaneous(H));
+                  ((test(X);list_empty(T))->assert(miscellaneous(H));
                   readMiscellaneous(T)
                   ).
