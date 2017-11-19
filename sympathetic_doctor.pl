@@ -31,10 +31,10 @@ list_empty([_|_]):-false().
 
 % Symptom lists
 pain_library([unbearable,strong,mild,manageable,no]).
-mood_library([calm,angry,weepy,depressed,stressed]).
+mood_library([stressed,angry,weepy,depressed,calm]).
 fever_library([very_high,high,mild,low,no]).
 bowel_movements_library([hard,loose,tarry,bloody,normal]).
-miscellaneous_library([itchy,giddy,hallucinating,twitches,palpitations]).
+miscellaneous_library([itchy,giddy,hallucinating,twitches,palpitations,no_special_symptoms]).
 
 % Record the symptoms of the patient by asserting the appropriate facts
 pain().
