@@ -18,13 +18,14 @@ main:-initialize(),
 test(X):-
    X=='yes'.
 
+% retracting all the facts asserted for the previous patient so do not have to reconsult the script 
 initialize():- retractall(pain(_)),
                retractall(mood(_)),
                retractall(fever(_)),
                retractall(bowel(_)),
                retractall(miscellaneous(_)).
 
-
+% unifies with the appropriate predicate depending on whether the list is empty.
 list_empty([]):-true().
 list_empty([_|_]):-false().
 
@@ -46,6 +47,7 @@ miscellaneous().
 
 
 % Diseases rules
+% for example, a patient has cancer if pain is strong, depressed mood, mild fever, bloody stools and giddiness
 cancer():-pain(strong),mood(depressed),fever(mild),bowel(bloody),
           miscellaneous(giddy).
 amoebiasis():-pain(unbearable),mood(weepy),fever(high),bowel(loose),
@@ -60,7 +62,7 @@ dehydration():-pain(no),mood(calm),fever(no),bowel(hard),
 
 % checks meets conditions for which disease and prints the disease
 diagnose():-nl,
-            cancer()->write("You may have cancer. I recommend undergoing medical tests");
+            cancer()->write("You may have cancer. I recommend undergoing medical tests"); % if have cancer then print
             amoebiasis()->write("You have amoebiasis. I will prescribe you the antibiotics");
             rabies()->write("You have rabies. We have to admit you to the hospital");
             heart_trouble()->write("You may have heart trouble. I recommend a stress test immediately");
@@ -71,7 +73,7 @@ diagnose():-nl,
 /*
 predicates  readPain/0, readMood/0, etc  to pass the appropriate lists to readPain/1, readMood/1 etc.
 */
-readPain():-pain_library(X),readPain(X).
+readPain():-pain_library(X),readPain(X). % pass all X that is in pain_library to readPain
 readMood():-mood_library(X),readMood(X).
 readFever():-fever_library(X),readFever(X).
 readBowel():-bowel_movements_library(X),readBowel(X).
@@ -85,11 +87,11 @@ or else it calls the same predicate recursively passing the tail as parameter
 
 */
 readPain(List):-
-                  [H|T]=List,
-                  format("Do you experience ~w pain",[H]),
-                  read(X),
-                  ((test(X);list_empty(T))->assert(pain(H));
-                  readPain(T)
+                  [H|T]=List, % Split the list into head and tail
+                  format("Do you experience ~w pain",[H]), % print the questions along with the head
+                  read(X), % read user input
+                  ((test(X);list_empty(T))->assert(pain(H)); % assert fact if last item in the list or answer is yes
+                  readPain(T) % if answer is no and there are more items, then recursion
                   ).
 
 
